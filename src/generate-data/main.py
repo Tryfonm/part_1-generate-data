@@ -59,7 +59,8 @@ def parse_arguments() -> Dict[str, Union[int, str]]:
 
 def preprocess_dataset(
     sequence_length: int,
-    subset, file_path: str = './data/train_data.txt',
+    subset: int, 
+    file_path: str = './data/train_data.txt',
     **kwargs
 ) -> pd.DataFrame:
     """_summary_
