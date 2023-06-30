@@ -1,0 +1,43 @@
+version: '3'
+
+networks:
+  project-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.8.0.0/16
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=password  
+      - DATABASE_NAME=postgres_db
+    networks:
+      project-network:
+        ipv4_address: 172.8.0.5
+
+  generate-data:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: generate-data
+    depends_on:
+      - postgres
+    environment:
+      - USERNAME=postgres_user
+      - PASSWORD=password
+      - SERVER=172.8.0.5
+      - PORT=5432
+      - DATABASE=postgres_db
+    networks:
+      project-network:
+        ipv4_address: 172.8.0.6
+    entrypoint: python
+    command: /workspace/src/generate-data/main.py
